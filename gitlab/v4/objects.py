@@ -1184,12 +1184,15 @@ class ProjectRegistryRepository(ObjectDeleteMixin, RESTObject):
 
 
 class ProjectRegistryRepositoryManager(DeleteMixin, ListMixin, RESTManager):
-    _path= '/projects/%(project_id)s/registry/repositories'
+    _path = '/projects/%(project_id)s/registry/repositories'
     _obj_cls = ProjectRegistryRepository
     _from_parent_attrs = {'project_id': 'id'}
 
+
 class ProjectRegistryTag(ObjectDeleteMixin, RESTObject):
     _id_attr = 'name'
+
+
 
 class ProjectRegistryTagManager(DeleteMixin, RetrieveMixin, RESTManager):
     _obj_cls = ProjectRegistryTag
@@ -2032,6 +2035,18 @@ class ProjectPagesDomainManager(CRUDMixin, RESTManager):
     _from_parent_attrs = {'project_id': 'id'}
     _create_attrs = (('domain', ), ('certificate', 'key'))
     _update_attrs = (tuple(), ('certificate', 'key'))
+
+
+class ProjectRelease(RESTObject):
+    _id_attr = 'tag_name'
+
+
+class ProjectReleaseManager(NoUpdateMixin, RESTManager):
+    _path = '/projects/%(project_id)s/releases'
+    _obj_cls = ProjectRelease
+    _from_parent_attrs = {'project_id': 'id'}
+    _create_attrs = (('name', 'tag_name', 'description', ),
+                     ('ref', 'assets', ))
 
 
 class ProjectTag(ObjectDeleteMixin, RESTObject):
@@ -3314,6 +3329,7 @@ class Project(SaveMixin, ObjectDeleteMixin, RESTObject):
         ('protectedtags', 'ProjectProtectedTagManager'),
         ('pipelineschedules', 'ProjectPipelineScheduleManager'),
         ('pushrules', 'ProjectPushRulesManager'),
+        ('releases', 'ProjectReleaseManager'),
         ('repositories', 'ProjectRegistryRepositoryManager'),
         ('runners', 'ProjectRunnerManager'),
         ('services', 'ProjectServiceManager'),
